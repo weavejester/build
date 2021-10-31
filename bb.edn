@@ -1,0 +1,5 @@
+{:tasks
+ {:requires ([babashka.fs :as fs])
+  clean (do (fs/delete "pom.xml") (fs/delete-tree "target"))
+  pom   (shell "clojure -T:build pom")
+  test  (shell "clojure -M:test")}}

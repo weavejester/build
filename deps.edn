@@ -1,6 +1,13 @@
 {:paths ["src"]
+ :deps {io.github.clojure/tools.build {:git/tag "v0.6.2" :git/sha "226fb52"}
+        com.github.pmonks/tools-pom   {:mvn/version "1.0.23"}
+        slipset/deps-deploy           {:mvn/version "0.2.0"}}
  :aliases
- {:build
+ {:test
+  {:extra-paths ["test"]
+   :extra-deps {lambdaisland/kaocha {:mvn/version "1.60.945"}}
+   :main-opts ["-m" "kaocha.runner"]}
+  :build
   {:deps {io.github.clojure/tools.build {:git/tag "v0.6.2" :git/sha "226fb52"}
           com.github.pmonks/tools-pom   {:mvn/version "1.0.23"}
           slipset/deps-deploy           {:mvn/version "0.2.0"}}
