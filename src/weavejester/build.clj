@@ -1,7 +1,7 @@
 (ns weavejester.build
-  (:require [clojure.string :as str]
-            [clojure.tools.build.api :as b]
-            [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str]
+            [clojure.tools.build.api :as b]))
 
 (defn- read-project []
   (read-string (slurp "project.edn")))
