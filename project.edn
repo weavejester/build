@@ -1,3 +1,4 @@
 {:lib         weavejester/build
  :version     "0.0.1" 
- :description "Testing"}
+ :description "Testing"
+ :jar-file    "target/build-0.0.1.jar"}

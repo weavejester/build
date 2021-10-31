@@ -1,6 +1,5 @@
 {:paths ["src"]
  :deps {io.github.clojure/tools.build {:git/tag "v0.6.2" :git/sha "226fb52"}
-        com.github.pmonks/tools-pom   {:mvn/version "1.0.23"}
         slipset/deps-deploy           {:mvn/version "0.2.0"}}
  :aliases
  {:test
@@ -9,7 +8,6 @@
    :main-opts ["-m" "kaocha.runner"]}
   :build
   {:deps {io.github.clojure/tools.build {:git/tag "v0.6.2" :git/sha "226fb52"}
-          com.github.pmonks/tools-pom   {:mvn/version "1.0.23"}
           slipset/deps-deploy           {:mvn/version "0.2.0"}}
    :paths ["src"]
    :ns-default weavejester.build}}}
