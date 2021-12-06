@@ -19,9 +19,10 @@
   (str (io/file target-dir (str lib "-" version ".jar"))))
 
 (defn- update-derived-defaults
-  [{:keys [class-dir jar-file target-dir version] :as project}]
+  [{:keys [class-dir jar-file target-dir version scm] :as project}]
   (cond-> project
     (nil? version)   (assoc :version (git/default-version))
+    (nil? scm)       (assoc :scm     (git/github-scm-map))
     (nil? class-dir) (as-> p (assoc p :class-dir (default-class-dir p)))
     (nil? jar-file)  (as-> p (assoc p :jar-file  (default-jar-file  p)))))
 
