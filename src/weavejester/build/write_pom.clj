@@ -47,30 +47,24 @@
         (conj [::pom/optional "true"]))
       (printerrln "Skipping coordinate:" coord))))
 
-(defn- gen-deps
-  [deps]
+(defn- gen-deps [deps]
   [::pom/dependencies (map to-dep deps)])
 
-(defn- gen-source-dir
-  [path]
+(defn- gen-source-dir [path]
   [::pom/sourceDirectory path])
 
-(defn- to-resource
-  [resource]
+(defn- to-resource [resource]
   [::pom/resource [::pom/directory resource]])
 
-(defn- gen-resources
-  [rpaths]
+(defn- gen-resources [rpaths]
   [::pom/resources (map to-resource rpaths)])
 
-(defn- to-repo
-  [[name repo]]
+(defn- to-repo [[name repo]]
   [::pom/repository
    [::pom/id name]
    [::pom/url (:url repo)]])
 
-(defn- gen-repos
-  [repos]
+(defn- gen-repos [repos]
   [::pom/repositories (map to-repo repos)])
 
 (defn- gen-pom
@@ -120,9 +114,7 @@
     (apply xml/element tag attrs children)
     (meta node)))
 
-(defn- libs->deps
-  "Convert libmap to root deps"
-  [libs]
+(defn- libs->deps [libs]
   (reduce-kv
     (fn [ret lib {:keys [dependents] :as coord}]
       (if (seq dependents)
@@ -140,11 +132,9 @@
     (.toString pom-file)))
 
 (defn write-pom
-  ""
-  [params]
-  (let [{:keys [basis class-dir src-pom lib version scm src-dirs resource-dirs
-                repos description url licenses]} params
-        {:keys [libs]} basis
+  [{:keys [basis class-dir src-pom lib version scm src-dirs resource-dirs
+           repos description url licenses]}]
+  (let [{:keys [libs]} basis
         root-deps      (libs->deps libs)
         src-pom-file   (api/resolve-path (or src-pom "pom.xml"))
         repos          (or repos (basis-repos basis))
