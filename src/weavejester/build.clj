@@ -2,8 +2,8 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.tools.build.api :as b]
-            [weavejester.git :as git]
-            [weavejester.write-pom :as pom]))
+            [weavejester.build.git :as git]
+            [weavejester.build.write-pom :as pom]))
 
 (defn- read-project []
   (read-string (slurp "project.edn")))
