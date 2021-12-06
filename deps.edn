@@ -6,6 +6,9 @@
   {:extra-paths ["test"]
    :extra-deps {lambdaisland/kaocha {:mvn/version "1.60.945"}}
    :main-opts ["-m" "kaocha.runner"]}
+  :repl
+  {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}
+   :main-opts ["-m" "rebel-readline.main"]}
   :build
   {:deps {io.github.clojure/tools.build {:git/tag "v0.6.2" :git/sha "226fb52"}
           slipset/deps-deploy           {:mvn/version "0.2.0"}}
