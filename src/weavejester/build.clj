@@ -1,7 +1,8 @@
 (ns weavejester.build
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.tools.build.api :as b]))
+            [clojure.tools.build.api :as b]
+            [weavejester.write-pom :as pom]))
 
 (defn- read-project []
   (read-string (slurp "project.edn")))
@@ -27,7 +28,7 @@
 (defn- update-derived-defaults
   [{:keys [class-dir jar-file target-dir version] :as project}]
   (cond-> project
-    (nil? version)   (assoc :version   (default-version))
+    (nil? version)   (assoc :version (default-version))
     (nil? class-dir) (as-> p (assoc p :class-dir (default-class-dir p)))
     (nil? jar-file)  (as-> p (assoc p :jar-file  (default-jar-file  p)))))
 
@@ -38,6 +39,6 @@
 
 (defn jar [_]
   (doto (assoc @project :basis (b/create-basis))
-    (b/write-pom)
+    (pom/write-pom)
     (b/copy-dir)
     (b/jar)))
