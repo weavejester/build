@@ -2,6 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.tools.build.api :as b]
+            [weavejester.git :as git]
             [weavejester.write-pom :as pom]))
 
 (defn- read-project []
@@ -10,14 +11,6 @@
 (def ^:private default-project
   {:src-dirs   ["src" "resources"]
    :target-dir "target"})
-
-(defn- git [& args]
-  (b/process {:command-args (into ["git"] args)
-              :out :capture
-              :err :ignore}))
-
-(defn- default-version []
-  (some-> (git "describe" "--exact-match" "--abbrev=0") :out str/trim))
 
 (defn- default-class-dir [{:keys [target-dir]}]
   (str (io/file target-dir "classes")))
@@ -28,7 +21,7 @@
 (defn- update-derived-defaults
   [{:keys [class-dir jar-file target-dir version] :as project}]
   (cond-> project
-    (nil? version)   (assoc :version (default-version))
+    (nil? version)   (assoc :version (git/default-version))
     (nil? class-dir) (as-> p (assoc p :class-dir (default-class-dir p)))
     (nil? jar-file)  (as-> p (assoc p :jar-file  (default-jar-file  p)))))
 
