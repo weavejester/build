@@ -1,1 +1,6 @@
-{:lib dev.weavejester/build}
+{:lib dev.weavejester/build
+ :description "Clojure build library for tools.deps"
+ :url "https://github.com/weavejester/build"
+ :licenses
+ [{:name "Eclipse Public License"
+   :url "http://www.eclipse.org/legal/epl-v10.html"}]}

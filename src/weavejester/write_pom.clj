@@ -74,10 +74,10 @@
   [::pom/repositories (map to-repo repos)])
 
 (defn- gen-pom
-  [{:keys [deps src-paths resource-paths repos group artifact version scm]
+  [{:keys [deps src-paths resource-paths repos group artifact version scm
+           description url licenses]
     :or {version "0.1.0"}}]
-  (let [[path & paths] src-paths
-        {:keys [connection developerConnection tag url]} scm]
+  (let [[path & paths] src-paths]
     (xml/sexp-as-element
       [::pom/project
        {:xmlns "http://maven.apache.org/POM/4.0.0"
@@ -89,6 +89,16 @@
        [::pom/artifactId artifact]
        [::pom/version version]
        [::pom/name artifact]
+       (when description
+         [::pom/description description])
+       (when url
+         [::pom/url url])
+       (when licenses
+         [::pom/licenses
+          (for [{:keys [name url]} licenses]
+            [::pom/license
+             [::pom/name name]
+             [::pom/url url]])])
        (gen-deps deps)
        (when (or path (seq resource-paths))
          (when (seq paths) (apply printerrln "Skipping paths:" paths))
@@ -97,11 +107,12 @@
           (when (seq resource-paths) (gen-resources resource-paths))])
        (gen-repos repos)
        (when scm
-         [::pom/scm
-          (when connection [::pom/connection connection])
-          (when developerConnection [::pom/developerConnection developerConnection])
-          (when tag [::pom/tag tag])
-          (when url [::pom/url url])])])))
+         (let [{:keys [connection developerConnection tag url]} scm]
+           [::pom/scm
+            (when connection [::pom/connection connection])
+            (when developerConnection [::pom/developerConnection developerConnection])
+            (when tag [::pom/tag tag])
+            (when url [::pom/url url])]))])))
 
 (defn- make-xml-element
   [{:keys [tag attrs] :as node} children]
@@ -132,7 +143,7 @@
   ""
   [params]
   (let [{:keys [basis class-dir src-pom lib version scm src-dirs resource-dirs
-                repos]} params
+                repos description url licenses]} params
         {:keys [libs]} basis
         root-deps      (libs->deps libs)
         src-pom-file   (api/resolve-path (or src-pom "pom.xml"))
@@ -144,8 +155,11 @@
                                  :repos          repos
                                  :group          (namespace lib)
                                  :artifact       (name lib)}
-                          version (assoc :version version)
-                          scm     (assoc :scm scm)))
+                          version     (assoc :version version)
+                          scm         (assoc :scm scm)
+                          description (assoc :description description)
+                          url         (assoc :url url)
+                          licenses    (assoc :licenses licenses)))
         class-dir-file (api/resolve-path class-dir)
         pom-dir        (meta-maven-path {:lib lib})
         pom-dir-file   (file/ensure-dir (jio/file class-dir-file pom-dir))]
