@@ -1,7 +1,8 @@
 {:tasks
  {:requires ([babashka.fs :as fs])
   clean    (fs/delete-tree "target")
-  jar      (shell "clojure -T:build jar")
-  outdated (shell "clojure -M:outdated")
-  repl     (shell "clojure -M:repl")
-  test     (shell "clojure -M:test")}}
+  jar      (clojure "-T:build jar")
+  outdated (apply clojure "-M:outdated" *command-line-args*)
+  repl     (apply clojure "-M:repl" *command-line-args*)
+  test     (apply clojure "-M:test" *command-line-args*)
+  uberjar  (clojure "-T:build uberjar")}}
