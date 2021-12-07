@@ -1,8 +1,20 @@
 {:tasks
- {:requires ([babashka.fs :as fs])
-  clean    (fs/delete-tree "target")
-  jar      (clojure "-T:build jar")
-  outdated (apply clojure "-M:outdated" *command-line-args*)
-  repl     (apply clojure "-M:repl" *command-line-args*)
-  test     (apply clojure "-M:test" *command-line-args*)
-  uberjar  (clojure "-T:build uberjar")}}
+ {clean
+  {:requires ([babashka.fs :as fs]) 
+   :doc      "Remove the target folder"
+   :task     (fs/delete-tree "target")}
+  jar
+  {:doc  "Create a jar file from the project"
+   :task (clojure "-T:build jar")}
+  outdated
+  {:doc  "Finds outdated dependencies"
+   :task (apply clojure "-M:outdated" *command-line-args*)}
+  repl
+  {:doc  "Start a REPL for the project"
+   :task (apply clojure "-M:repl" *command-line-args*)}
+  test
+  {:doc  "Run tests for the project"
+   :task (apply clojure "-M:test" *command-line-args*)}
+  uberjar
+  {:doc  "Create an uberjar with the project and dependencies"
+   :task (clojure "-T:build uberjar")}}}
