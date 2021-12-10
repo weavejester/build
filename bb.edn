@@ -7,12 +7,17 @@
   {:doc  "Create a jar file from the project"
    :task (clojure "-T:build jar")}
   lint
-  {:requires ([babashka.pods :as pods])
+  {:requires ([babashka.pods :as pods]
+              [clojure.edn :as edn])
+   :doc      "Lint the source files"
    :task
    (do (pods/load-pod "clj-kondo")
        (require 'pod.borkdude.clj-kondo)
-       (let [results (eval '(-> (pod.borkdude.clj-kondo/run! {:lint ["src"]})
-                                (doto pod.borkdude.clj-kondo/print!)))]
+       (let [results (eval '(let [src (-> (slurp "project.edn")
+                                          edn/read-string
+                                          (:src-dirs ["src"]))]
+                              (-> (pod.borkdude.clj-kondo/run! {:lint src})
+                                  (doto pod.borkdude.clj-kondo/print!))))]
          (when (-> results :findings seq)
            (System/exit 1))))}
   outdated
