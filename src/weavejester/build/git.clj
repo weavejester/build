@@ -1,6 +1,5 @@
 (ns weavejester.build.git
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [clojure.tools.build.api :as b]))
 
 (defn- git [& args]
@@ -22,7 +21,7 @@
       (re-matches #"[^:]+://(?:[A-Za-z-]{2,}@)?github.com/([^/]+)/([^/]+?)(?:.git)?" url)))
 
 (defn- github-urls [url]
-  (if-let [[_ user repo] (parse-github-url url)]
+  (when-let [[_ user repo] (parse-github-url url)]
     {:public-clone (str "git://github.com/"     user "/" repo ".git")
      :dev-clone    (str "ssh://git@github.com/" user "/" repo ".git")
      :browse       (str "https://github.com/"   user "/" repo)}))

@@ -1,6 +1,5 @@
 (ns weavejester.build
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]
             [clojure.tools.build.api :as b]
             [weavejester.build.git :as git]
             [weavejester.build.write-pom :as pom]))
@@ -22,7 +21,7 @@
   (str (io/file target-dir (str lib "-" version "-uber.jar"))))
 
 (defn- update-derived-defaults
-  [{:keys [class-dir jar-file uber-file target-dir version scm] :as project}]
+  [{:keys [class-dir jar-file uber-file version scm] :as project}]
   (cond-> project
     (nil? version)   (assoc :version (git/default-version))
     (nil? scm)       (assoc :scm     (git/github-scm-map))

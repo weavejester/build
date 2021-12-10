@@ -10,15 +10,10 @@
   (:require [clojure.java.io :as jio]
             [clojure.string :as str]
             [clojure.data.xml :as xml]
-            [clojure.data.xml.tree :as tree]
-            [clojure.data.xml.event :as event]
-            [clojure.zip :as zip]
             [clojure.tools.deps.alpha.util.maven :as maven]
             [clojure.tools.deps.alpha.util.io :refer [printerrln]]
             [clojure.tools.build.api :as api]
-            [clojure.tools.build.util.file :as file])
-  (:import [java.io Reader]
-           [clojure.data.xml.node Element]))
+            [clojure.tools.build.util.file :as file]))
 
 (xml/alias-uri 'pom "http://maven.apache.org/POM/4.0.0")
 
@@ -108,12 +103,6 @@
             (when tag [::pom/tag tag])
             (when url [::pom/url url])]))])))
 
-(defn- make-xml-element
-  [{:keys [tag attrs] :as node} children]
-  (with-meta
-    (apply xml/element tag attrs children)
-    (meta node)))
-
 (defn- libs->deps [libs]
   (reduce-kv
     (fn [ret lib {:keys [dependents] :as coord}]
@@ -132,11 +121,10 @@
     (.toString pom-file)))
 
 (defn write-pom
-  [{:keys [basis class-dir src-pom lib version scm src-dirs resource-dirs
+  [{:keys [basis class-dir lib version scm src-dirs resource-dirs
            repos description url licenses]}]
   (let [{:keys [libs]} basis
         root-deps      (libs->deps libs)
-        src-pom-file   (api/resolve-path (or src-pom "pom.xml"))
         repos          (or repos (basis-repos basis))
         pom            (gen-pom
                         (cond-> {:deps           root-deps
