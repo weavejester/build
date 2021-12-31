@@ -3,11 +3,7 @@
   (:require [babashka.fs :as fs]
             [babashka.pods :as pods]
             [babashka.tasks :as bb]
-            [clojure.edn :as edn]))
-
-(def ^:private project-config
-  (delay (when (fs/exists? "project.edn")
-           (edn/read-string (slurp "project.edn")))))
+            [weavejester.build.project :as p]))
 
 (defn- run-clojure [deps ns args]
   (apply bb/clojure "-Sdeps" (pr-str {:deps deps}) "-M" "-m" (str ns) args))
@@ -15,7 +11,7 @@
 (defn clean
   "Remove the target folder"
   []
-  (fs/delete-tree (:target-dir @project-config "target")))
+  (fs/delete-tree (:target-dir @p/project)))
 
 (defn jar
   "Create a jar file from the project"
@@ -29,7 +25,7 @@
   (require 'pod.borkdude.clj-kondo)
   (let [lint-fn  (resolve 'pod.borkdude.clj-kondo/run!)
         print-fn (resolve 'pod.borkdude.clj-kondo/print!)
-        results  (let [src (:src-dirs @project-config ["src"])]
+        results  (let [src (:src-dirs @p/project)]
                   (-> (lint-fn {:lint src})
                       (doto print-fn)))]
     (when (-> results :findings seq)

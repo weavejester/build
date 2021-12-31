@@ -1,20 +1,18 @@
 (ns weavejester.build.git
   (:require [clojure.string :as str]
-            [clojure.tools.build.api :as b]))
+            [clojure.java.shell :as sh]))
 
 (defn- git [& args]
-  (b/process {:command-args (into ["git"] args)
-              :out :capture
-              :err :ignore}))
+  (some-> (apply sh/sh "git" args) :out str/trim))
 
 (defn default-version []
-  (some-> (git "describe" "--exact-match" "--abbrev=0") :out str/trim))
+  (git "describe" "--exact-match" "--abbrev=0"))
 
 (defn git-head []
-  (some-> (git "rev-parse" "HEAD") :out str/trim))
+  (git "rev-parse" "HEAD"))
 
 (defn git-origin []
-  (some-> (git "config" "--get" "remote.origin.url") :out str/trim))
+  (git "config" "--get" "remote.origin.url"))
 
 (defn- parse-github-url [url]
   (or (re-matches #"(?:[A-Za-z-]{2,}@)?github.com:([^/]+)/([^/]+).git" url)
