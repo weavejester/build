@@ -1,43 +1,9 @@
-{:tasks
- {clean
-  {:requires ([babashka.fs :as fs]) 
-   :doc      "Remove the target folder"
-   :task     (fs/delete-tree "target")}
-  jar
-  {:doc  "Create a jar file from the project"
-   :task (clojure "-T:build jar")}
-  lint
-  {:requires ([babashka.pods :as pods]
-              [clojure.edn :as edn])
-   :doc      "Lint the source files"
-   :task
-   (do (pods/load-pod "clj-kondo")
-       (require 'pod.borkdude.clj-kondo)
-       (let [results (eval '(let [src (-> (slurp "project.edn")
-                                          edn/read-string
-                                          (:src-dirs ["src"]))]
-                              (-> (pod.borkdude.clj-kondo/run! {:lint src})
-                                  (doto pod.borkdude.clj-kondo/print!))))]
-         (when (-> results :findings seq)
-           (System/exit 1))))}
-  outdated
-  {:doc  "Find outdated dependencies"
-   :task (apply clojure "-Sdeps"
-                (pr-str '{:deps {com.github.liquidz/antq {:mvn/version "1.3.0"}}})
-                "-M" "-m" "antq.core"
-                *command-line-args*)}
-  repl
-  {:doc  "Start a REPL for the project"
-   :task (apply clojure "-Sdeps"
-                (pr-str '{:deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}})
-                "-M" "-m" "rebel-readline.main"
-                *command-line-args*)}
-  test
-  {:doc  "Run tests for the project"
-   :task (apply clojure "-Sdeps"
-                (pr-str '{:deps {lambdaisland/kaocha {:mvn/version "1.60.945"}}})
-                "-Mtest" "-m" "kaocha.runner"
-                *command-line-args*)}
-  uberjar
-  {:doc  "Create an uberjar with the project and dependencies"
-   :task (clojure "-T:build uberjar")}}}
+{:deps {dev.weavejester/build {:local/root "."}}
+ :tasks
+ {clean    weavejester.build.tasks/clean
+  jar      weavejester.build.tasks/jar 
+  lint     weavejester.build.tasks/lint 
+  outdated weavejester.build.tasks/outdated
+  repl     weavejester.build.tasks/repl
+  test     weavejester.build.tasks/test
+  uberjar  weavejester.build.tasks/uberjar}}
