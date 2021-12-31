@@ -1,4 +1,4 @@
-(ns weavejester.build
+(ns weavejester.build.tool
   (:require [clojure.java.io :as io]
             [clojure.tools.build.api :as b]
             [weavejester.build.git :as git]

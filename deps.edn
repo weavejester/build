@@ -8,4 +8,4 @@
   {:deps {io.github.clojure/tools.build {:git/tag "v0.6.8" :git/sha "d79ae84"}
           slipset/deps-deploy           {:mvn/version "0.2.0"}}
    :paths ["src"]
-   :ns-default weavejester.build}}}
+   :ns-default weavejester.build.tool}}}

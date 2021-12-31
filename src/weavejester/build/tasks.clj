@@ -33,7 +33,8 @@
                   (-> (lint-fn {:lint src})
                       (doto print-fn)))]
     (when (-> results :findings seq)
-      (throw (ex-info "Lint warnings found, exiting with status code 1" {:babashka/exit 1})))))
+      (throw (ex-info "Lint warnings found, exiting with status code 1"
+                      {:babashka/exit 1})))))
 
 (defn outdated
   "Find outdated dependencies"
