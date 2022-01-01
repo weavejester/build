@@ -1,0 +1,9 @@
+{:deps {dev.weavejester/build {:local/root "."}}
+ :tasks
+ {clean    weavejester.build.tasks/clean
+  jar      weavejester.build.tasks/jar
+  lint     weavejester.build.tasks/lint
+  outdated weavejester.build.tasks/outdated
+  repl     weavejester.build.tasks/repl
+  test     weavejester.build.tasks/test
+  uberjar  weavejester.build.tasks/uberjar}}
