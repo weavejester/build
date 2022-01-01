@@ -13,20 +13,27 @@
   (-> (read-deps) :aliases :build :deps
       (get 'dev.weavejester/build {:local/root "."})))
 
-(defn- replace-bbedn-version [s version]
-  (str/replace s "VERSION" (pr-str version)))
+(defn- replace-template-vars [text vars]
+  (reduce-kv (fn [s k v] (str/replace s k v)) text vars))
 
-(defn- write-bbedn []
-  (if (.exists (io/file b/*project-root* "bb.edn"))
-    (println "Skipping bb.edn as it already exists")
-    (let [bbedn (-> (io/resource "weavejester/build/bb.edn.tmpl")
-                    (slurp)
-                    (replace-bbedn-version (find-self-version)))]
-      (b/write-file {:path "bb.edn" :string bbedn})
-      (println "Written bb.edn"))))
+(defn- write-template [src dest vars]
+  (if (.exists (io/file b/*project-root* dest))
+    (println "Skipping" dest "as it already exists")
+    (let [text (-> src io/resource slurp (replace-template-vars vars))]
+      (b/write-file {:path dest, :string text})
+      (println "Written" dest))))
+
+(defn- write-bb-edn []
+  (write-template "weavejester/build/bb.edn.tmpl" "bb.edn"
+                  {"VERSION" (pr-str (find-self-version))}))
+
+(defn- write-project-edn []
+  (write-template "weavejester/build/project.edn.tmpl" "project.edn"
+                  {"LIBRARY_NAME" "test"}))
 
 (defn init [_]
-  (write-bbedn))
+  (write-bb-edn)
+  (write-project-edn))
 
 (defn jar [_]
   (doto (assoc @p/project :basis (b/create-basis))
