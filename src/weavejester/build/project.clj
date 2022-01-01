@@ -6,8 +6,9 @@
   (read-string (slurp "project.edn")))
 
 (def ^:private default-project
-  {:src-dirs   ["src" "resources"]
-   :target-dir "target"})
+  {:src-dirs      ["src"]
+   :resource-dirs ["resources"]
+   :target-dir    "target"})
 
 (defn- default-class-dir [{:keys [target-dir]}]
   (str (io/file target-dir "classes")))

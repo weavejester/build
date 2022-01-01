@@ -43,15 +43,19 @@
   (write-project-edn)
   (write-tests-edn))
 
+(defn- copy-to-target [{:keys [src-dirs resource-dirs class-dir]}]
+  (b/copy-dir {:src-dirs   (into src-dirs resource-dirs)
+               :target-dir class-dir}))
+
 (defn jar [_]
   (doto (assoc @p/project :basis (b/create-basis))
     (pom/write-pom)
-    (b/copy-dir)
+    (copy-to-target)
     (b/jar)))
 
 (defn uberjar [_]
   (doto (assoc @p/project :basis (b/create-basis))
     (pom/write-pom)
-    (b/copy-dir)
+    (copy-to-target)
     (b/compile-clj)
     (b/uber)))
