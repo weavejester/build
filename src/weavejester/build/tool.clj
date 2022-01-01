@@ -31,9 +31,17 @@
   (write-template "weavejester/build/project.edn.tmpl" "project.edn"
                   {"LIBRARY_NAME" "test"}))
 
+(defn- write-tests-edn []
+  (if (.exists (io/file b/*project-root* "tests.edn"))
+    (println "Skipping tests.edn as it already exists")
+    (let [text (slurp (io/resource "weavejester/build/tests.edn"))]
+      (b/write-file {:path "tests.edn", :string text})
+      (println "Written tests.edn"))))
+
 (defn init [_]
   (write-bb-edn)
-  (write-project-edn))
+  (write-project-edn)
+  (write-tests-edn))
 
 (defn jar [_]
   (doto (assoc @p/project :basis (b/create-basis))
