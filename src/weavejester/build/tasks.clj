@@ -16,7 +16,7 @@
 (defn jar
   "Create a jar file from the project"
   []
-  (bb/clojure "-T:build" "jar"))
+  (bb/clojure "-Tbuild" "jar"))
 
 (defn lint
   "Lint the source files"
@@ -53,4 +53,4 @@
 (defn uberjar
   "Create an uberjar with the project and dependencies"
   []
-  (bb/clojure "-T:build" "uberjar"))
+  (bb/clojure "-Tbuild" "uberjar"))
