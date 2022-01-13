@@ -6,12 +6,10 @@
             [weavejester.build.project :as p]
             [weavejester.build.write-pom :as pom]))
 
-(defn- read-deps []
-  (edn/read-string (slurp (io/file b/*project-root* "deps.edn"))))
-
 (defn- find-self-version []
-  (-> (read-deps) :aliases :build :deps
-      (get 'dev.weavejester/build {:local/root "."})))
+  (let [basis (-> (System/getProperty "clojure.basis") slurp edn/read-string)
+        lib   (-> basis :libs (get 'com.github.weavejester/build))]
+    (select-keys lib [:git/sha :git/tag])))
 
 (defn- replace-template-vars [text vars]
   (reduce-kv (fn [s k v] (str/replace s k v)) text vars))
