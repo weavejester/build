@@ -16,12 +16,18 @@
 (defn- replace-template-vars [text vars]
   (reduce-kv (fn [s k v] (str/replace s k v)) text vars))
 
+(defn- write-file
+  ([src dest]
+   (write-file src dest identity))
+  ([src dest xform]
+   (if (.exists (io/file b/*project-root* dest))
+     (println "Skipping" dest "as it already exists")
+     (let [text (xform (slurp (io/resource src)))]
+       (b/write-file {:path dest, :string text})
+       (println "Written " dest)))))
+
 (defn- write-template [src dest vars]
-  (if (.exists (io/file b/*project-root* dest))
-    (println "Skipping" dest "as it already exists")
-    (let [text (-> src io/resource slurp (replace-template-vars vars))]
-      (b/write-file {:path dest, :string text})
-      (println "Written" dest))))
+  (write-file src dest #(replace-template-vars % vars)))
 
 (defn- write-bb-edn []
   (write-template "weavejester/build/bb.edn.tmpl" "bb.edn"
@@ -32,11 +38,7 @@
                   {"LIBRARY_NAME" "test"}))
 
 (defn- write-tests-edn []
-  (if (.exists (io/file b/*project-root* "tests.edn"))
-    (println "Skipping tests.edn as it already exists")
-    (let [text (slurp (io/resource "weavejester/build/tests.edn"))]
-      (b/write-file {:path "tests.edn", :string text})
-      (println "Written tests.edn"))))
+  (write-file "weavejester/build/tests.edn" "tests.edn" ))
 
 (defn init [_]
   (write-bb-edn)
