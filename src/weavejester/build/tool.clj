@@ -59,3 +59,6 @@
     (copy-to-target)
     (b/compile-clj)
     (b/uber)))
+
+(defn evalstr [{:keys [sexp]}]
+  (eval sexp))
