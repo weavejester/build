@@ -120,9 +120,14 @@
         pom-file (jio/file "META-INF" "maven" (namespace lib) (name lib))]
     (.toString pom-file)))
 
+(defn pom-dir [{:keys [class-dir lib]}]
+  (let [class-dir-file (api/resolve-path class-dir)
+        pom-dir        (meta-maven-path {:lib lib})]
+    (file/ensure-dir (jio/file class-dir-file pom-dir))))
+
 (defn write-pom
-  [{:keys [basis class-dir lib version scm src-dirs resource-dirs
-           repos description url licenses]}]
+  [{:keys [basis lib version scm src-dirs resource-dirs repos description url
+           licenses] :as opts}]
   (let [{:keys [libs]} basis
         root-deps      (libs->deps libs)
         repos          (or repos (basis-repos basis))
@@ -138,9 +143,7 @@
                           description (assoc :description description)
                           url         (assoc :url url)
                           licenses    (assoc :licenses licenses)))
-        class-dir-file (api/resolve-path class-dir)
-        pom-dir        (meta-maven-path {:lib lib})
-        pom-dir-file   (file/ensure-dir (jio/file class-dir-file pom-dir))]
+        pom-dir-file   (pom-dir opts)]
     (spit (jio/file pom-dir-file "pom.xml") (xml/indent-str pom))
     (spit (jio/file pom-dir-file "pom.properties")
       (str/join (System/lineSeparator)

@@ -65,6 +65,7 @@
   (jar m)
   (deploy/deploy
    {:artifact       (:jar-file @p/project)
+    :pom-file       (io/file (pom/pom-dir @p/project) "pom.xml")
     :installer      :remote
     :sign-releases? true}))
 
