@@ -54,3 +54,8 @@
   "Create an uberjar with the project and dependencies"
   []
   (bb/clojure "-Tbuild" "uberjar"))
+
+(defn deploy
+  "Deploy an uberjar to Clojars"
+  []
+  (bb/clojure "-Tbuild" "deploy"))

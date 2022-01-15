@@ -3,6 +3,7 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.tools.build.api :as b]
+            [deps-deploy.deps-deploy :as deploy]
             [weavejester.build.project :as p]
             [weavejester.build.write-pom :as pom]))
 
@@ -59,6 +60,13 @@
     (copy-to-target)
     (b/compile-clj)
     (b/uber)))
+
+(defn deploy [m]
+  (jar m)
+  (deploy/deploy
+   {:artifact       (:jar-file @p/project)
+    :installer      :remote
+    :sign-releases? true}))
 
 (defn evalstr [{:keys [sexp]}]
   (eval sexp))
