@@ -67,7 +67,11 @@
    {:artifact       (:jar-file @p/project)
     :pom-file       (io/file (pom/pom-dir @p/project) "pom.xml")
     :installer      :remote
-    :sign-releases? true}))
+    :sign-releases? true
+    :repository
+    {"clojars" {:url      "https://clojars.org/repo"
+                :username (System/getenv "CLOJARS_USERNAME")
+                :password (System/getenv "CLOJARS_PASSWORD")}}}))
 
 (defn evalstr [{:keys [sexp]}]
   (eval sexp))
