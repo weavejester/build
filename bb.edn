@@ -1,4 +1,4 @@
-{:deps {dev.weavejester/build {:local/root "."}}
+{:deps {io.github.weavejester/build {:local/root "."}}
  :tasks
  {clean    weavejester.build.tasks/clean
   deploy   weavejester.build.tasks/deploy

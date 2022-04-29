@@ -1,4 +1,4 @@
-{:lib com.github.weavejester/build
+{:lib io.github.weavejester/build
  :description "Clojure build library for tools.deps"
  :url "https://github.com/weavejester/build"
  :licenses
